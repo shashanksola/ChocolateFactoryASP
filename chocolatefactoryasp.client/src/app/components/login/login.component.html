@@ -1,0 +1,33 @@
+<section class="h-screen w-screen flex justify-center items-center bg-slate-900">
+    <a class="text-white font-bold text-2xl top-0 left-0 absolute p-8" routerLink="/">Go Back</a>
+    <div class="bg-white text-center rounded-lg p-8 lg:w-1/2 lg:flex">
+        <div class="flex-col justify-start text-start">
+            <h1 class="text-4xl font-bold">Login</h1>
+            <p class="mt-4">Login is for Choco.co Employees only</p>
+        </div>
+        <form [formGroup]="userLoginForm" (ngSubmit)="onSubmit()" class="flex items-start">
+            <input id="username" placeholder="Username" formControlName="username" type="text"
+                class="focus:outline-none border-b-4 border-slate-950 active:border-none w-full" />
+            @if (
+            userLoginForm.get('username')?.invalid && userLoginForm.get('username')?.touched
+            ) {
+            <ul class="text-red-700 text-nowrap text-start mt-2 list-disc">
+                <li>Username is required</li>
+            </ul>
+            }
+
+            <input id="password" placeholder="Password" formControlName="password" type="password"
+                class="focus:outline-none border-b-4 border-slate-950 active:border-none w-full" />
+            @if (
+            userLoginForm.get('password')?.invalid && userLoginForm.get('password')?.touched
+            ) {
+            <ul class="text-red-700 text-nowrap text-start mt-2 list-disc">
+                <li>Password is required</li>
+                <li>Password must be 8 characters long</li>
+            </ul>
+            }
+
+            <button type="submit" class="p-4 mt-4 border-2 border-black rounded-lg bg-black text-white">Login</button>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,147 @@
+<div class="p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">User Management</h1>
+
+    <!-- Role Filter -->
+    <div class="mb-6">
+        <label for="role-filter" class="font-medium">Filter by Role:</label>
+        <select id="role-filter" class="border rounded-md p-2 ml-4" (change)="filterByRole($event)">
+            <option value="">All Roles</option>
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+        </select>
+    </div>
+
+    <!-- User Table -->
+    <div class="overflow-x-auto mb-10">
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2">Username</th>
+                    <th class="border border-gray-300 px-4 py-2">First Name</th>
+                    <th class="border border-gray-300 px-4 py-2">Last Name</th>
+                    <th class="border border-gray-300 px-4 py-2">Email</th>
+                    <th class="border border-gray-300 px-4 py-2">Role</th>
+                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of filteredUsers" class="hover:bg-gray-100 text-center">
+                    <td class="border border-gray-300 px-4 py-2">{{ user.username }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ user.firstName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ user.lastName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ user.email }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ roles[user.role] }}</td>
+                    <td class="border border-gray-300 px-4 py-2"><button (click)="deleteUser(user.name)"><svg
+                                class="size-6" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" height="800px" width="800px"
+                                version="1.1" id="Layer_1" viewBox="0 0 330 330" xml:space="preserve">
+                                <g id="XMLID_6_">
+                                    <g id="XMLID_11_">
+                                        <path
+                                            d="M240,121.076H30V275c0,8.284,6.716,15,15,15h60h37.596c19.246,24.348,49.031,40,82.404,40c57.897,0,105-47.103,105-105    C330,172.195,290.816,128.377,240,121.076z M225,300c-41.355,0-75-33.645-75-75s33.645-75,75-75s75,33.645,75,75    S266.355,300,225,300z" />
+                                    </g>
+                                    <g id="XMLID_18_">
+                                        <path
+                                            d="M240,90h15c8.284,0,15-6.716,15-15s-6.716-15-15-15h-30h-15V15c0-8.284-6.716-15-15-15H75c-8.284,0-15,6.716-15,15v45H45    H15C6.716,60,0,66.716,0,75s6.716,15,15,15h15H240z M90,30h90v30h-15h-60H90V30z" />
+                                    </g>
+                                    <g id="XMLID_23_">
+                                        <path
+                                            d="M256.819,193.181c-5.857-5.858-15.355-5.858-21.213,0L225,203.787l-10.606-10.606c-5.857-5.858-15.355-5.858-21.213,0    c-5.858,5.858-5.858,15.355,0,21.213L203.787,225l-10.606,10.606c-5.858,5.858-5.858,15.355,0,21.213    c2.929,2.929,6.768,4.394,10.606,4.394c3.839,0,7.678-1.465,10.607-4.394L225,246.213l10.606,10.606    c2.929,2.929,6.768,4.394,10.607,4.394c3.839,0,7.678-1.465,10.606-4.394c5.858-5.858,5.858-15.355,0-21.213L246.213,225    l10.606-10.606C262.678,208.535,262.678,199.039,256.819,193.181z" />
+                                    </g>
+                                </g>
+                            </svg></button></td>
+                </tr>
+                <tr *ngIf="filteredUsers.length === 0">
+                    <td colspan="5" class="text-center border border-gray-300 px-4 py-2">
+                        No users found for the selected role.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add User Form -->
+    <div>
+        <h2 class="text-2xl font-bold mb-4">Register New User</h2>
+        <form [formGroup]="userForm" (ngSubmit)="registerUser()" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Username -->
+                <div>
+                    <label class="block font-medium mb-1">Username</label>
+                    <input type="text" formControlName="username" class="border rounded-md p-2 w-full"
+                        placeholder="Enter username" />
+                    <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched"
+                        class="text-red-500 text-sm">
+                        Username is required and must be between 3 and 100 characters.
+                    </div>
+                </div>
+
+                <!-- First Name -->
+                <div>
+                    <label class="block font-medium mb-1">First Name</label>
+                    <input type="text" formControlName="firstName" class="border rounded-md p-2 w-full"
+                        placeholder="Enter first name" />
+                    <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched"
+                        class="text-red-500 text-sm">
+                        First name is required and must be between 1 and 100 characters.
+                    </div>
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label class="block font-medium mb-1">Last Name</label>
+                    <input type="text" formControlName="lastName" class="border rounded-md p-2 w-full"
+                        placeholder="Enter last name" />
+                    <div *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched"
+                        class="text-red-500 text-sm">
+                        Last name is required and must be between 1 and 100 characters.
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block font-medium mb-1">Password</label>
+                    <input type="password" formControlName="password" class="border rounded-md p-2 w-full"
+                        placeholder="Enter password" />
+                    <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+                        class="text-red-500 text-sm">
+                        Password is required and must be at least 6 characters long.
+                    </div>
+                </div>
+
+                <!-- Role -->
+                <div>
+                    <label class="block font-medium mb-1">Role</label>
+                    <select formControlName="role" class="border rounded-md p-2 w-full">
+                        <option value="" disabled>Select a role</option>
+                        <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+                    </select>
+                    <div *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched"
+                        class="text-red-500 text-sm">
+                        Role is required.
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block font-medium mb-1">Email</label>
+                    <input type="email" formControlName="email" class="border rounded-md p-2 w-full"
+                        placeholder="Enter email" />
+                    <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+                        class="text-red-500 text-sm">
+                        A valid email address is required.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" [disabled]="userForm.invalid"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                    Register User
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

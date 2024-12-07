@@ -1,0 +1,17 @@
+<section>
+    <app-navbar></app-navbar>
+    <section class="flex w-screen">
+        <div class="w-1/5 bg-gray-300 h-dvh p-4 fixed">
+            @for (page of pages; track page.id) {
+            <a routerLink='{{page.path}}'
+                class="text-xl block hover:bg-brown hover:text-white p-2 rounded-lg">{{page.name}}</a>
+            }
+        </div>
+        <div class="w-1/5">
+
+        </div>
+        <div class="w-4/5 p-4">
+            <router-outlet></router-outlet>
+        </div>
+    </section>
+</section>

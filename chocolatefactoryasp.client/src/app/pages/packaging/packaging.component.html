@@ -1,0 +1,133 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">Packaging Management</h1>
+
+    <!-- Approved Products Table -->
+    <div class="overflow-x-auto mb-10">
+        <h2 class="text-2xl font-bold mb-4">Quality Controller Approved Products</h2>
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border px-4 py-2">Batch ID</th>
+                    <th class="border px-4 py-2">Test Results</th>
+                    <th class="border px-4 py-2">Inspection Date</th>
+                    <th class="border px-4 py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (approvedProducts.length === 0) {
+                <tr>
+                    <td colspan="4" class="text-center border px-4 py-2">No approved products found.</td>
+                </tr>
+                } @else {
+                @for (product of approvedProducts; track product.batchId) {
+                <tr class="text-center hover:bg-gray-100">
+                    <td class="border px-4 py-2">{{ product.batchId }}</td>
+                    <td class="border px-4 py-2">{{ product.testResults }}</td>
+                    <td class="border px-4 py-2">{{ product.inspectionDate | date }}</td>
+                    <td class="border px-4 py-2">
+                        {{ product.status === 0 ? 'Approved' : product.status === 1 ? 'Rejected' : 'Pending' }}
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Add Packaged Product Form -->
+    @if (role !== 'SalesRepresentative') {
+    <div>
+        <h2 class="text-2xl font-bold mb-4">Add Packaged Product</h2>
+        <form [formGroup]="packagingForm" (ngSubmit)="submitFinishedGood()" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Batch ID Dropdown -->
+                <div>
+                    <label class="block font-medium mb-1">Batch ID</label>
+                    <select formControlName="batchId" class="border rounded-md p-2 w-full" (change)="onBatchIdChange()">
+                        <option value="" disabled>Select Approved Product</option>
+                        @for (product of approvedProducts; track product.batchId) {
+                        <option [value]="product.batchId">
+                            {{ product.batchId }} - {{ product.testResults }}
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                    <label class="block font-medium mb-1">Quantity</label>
+                    <input type="number" formControlName="quantity" class="border rounded-md p-2 w-full" readonly />
+                </div>
+
+                <!-- Warehouse Location Dropdown -->
+                <div class="col-span-2">
+                    <label class="block font-medium mb-1">Warehouse Location</label>
+                    <select formControlName="warehouseLocation" class="border rounded-md p-2 w-full">
+                        <option value="" disabled>Select Warehouse</option>
+                        @for (warehouse of warehouses; track warehouse.name) {
+                        <option [value]="warehouse.name">
+                            {{ warehouse.name }} - {{ warehouse.location }} (Stock: {{ warehouse.currentStockLevel }})
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Packaging Date -->
+                <div>
+                    <label class="block font-medium mb-1">Packaging Date</label>
+                    <input type="date" formControlName="packagingDate" class="border rounded-md p-2 w-full" />
+                </div>
+
+                <!-- Expiry Date -->
+                <div>
+                    <label class="block font-medium mb-1">Expiry Date</label>
+                    <input type="date" formControlName="expiryDate" class="border rounded-md p-2 w-full" />
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" [disabled]="packagingForm.invalid"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                    Submit Packaged Product
+                </button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <!-- Finished Goods Table -->
+    <div class="overflow-x-auto mt-10">
+        <h2 class="text-2xl font-bold mb-4">Finished Goods</h2>
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border px-4 py-2">Batch ID</th>
+                    <th class="border px-4 py-2">Quantity</th>
+                    <th class="border px-4 py-2">Packaging Date</th>
+                    <th class="border px-4 py-2">Expiry Date</th>
+                    <th class="border px-4 py-2">Warehouse Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (finishedGoods.length === 0) {
+                <tr>
+                    <td colspan="5" class="text-center border px-4 py-2">No finished goods found.</td>
+                </tr>
+                } @else {
+                @for (good of finishedGoods; track good.productId) {
+                <tr class="text-center hover:bg-gray-100">
+                    <td class="border px-4 py-2">{{ good.batchId }}</td>
+                    <td class="border px-4 py-2">{{ good.quantity }}</td>
+                    <td class="border px-4 py-2">{{ good.packagingDate | date }}</td>
+                    <td class="border px-4 py-2">{{ good.expiryDate ? (good.expiryDate | date) : 'N/A' }}</td>
+                    <td class="border px-4 py-2">{{ good.warehouseLocation }}</td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

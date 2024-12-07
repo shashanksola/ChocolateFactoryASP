@@ -1,0 +1,137 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">Quality Management</h1>
+
+    <!-- Completed Productions Table -->
+    <div class="overflow-x-auto mb-10">
+        <h2 class="text-2xl font-bold mb-4">Completed Productions</h2>
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border px-4 py-2">Batch ID</th>
+                    <th class="border px-4 py-2">Recipe Name</th>
+                    <th class="border px-4 py-2">Start Date</th>
+                    <th class="border px-4 py-2">End Date</th>
+                    <th class="border px-4 py-2">Shift</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (completedProductions.length === 0) {
+                <tr>
+                    <td colspan="6" class="text-center border px-4 py-2">No completed productions found.</td>
+                </tr>
+                } @else {
+                @for (production of completedProductions; track production.scheduleId) {
+                <tr class="text-center hover:bg-gray-100">
+                    <td class="border px-4 py-2">{{ production.scheduleId }}</td>
+                    <td class="border px-4 py-2">{{ production.recipeName }}</td>
+                    <td class="border px-4 py-2">{{ production.startDate | date }}</td>
+                    <td class="border px-4 py-2">{{ production.endDate | date }}</td>
+                    <td class="border px-4 py-2">
+                        {{ production.shift === 0 ? 'Morning' : production.shift === 1 ? 'Afternoon' : 'Night' }}
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Add Quality Check Form -->
+    @if (role === 'QualityController' || role === 'FactoryManager') {
+    <div>
+        <h2 class="text-2xl font-bold mb-4">Add Quality Check</h2>
+        <form [formGroup]="qualityForm" (ngSubmit)="submitQualityCheck()" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Batch ID Dropdown -->
+                <div>
+                    <label class="block font-medium mb-1">Batch ID</label>
+                    <select formControlName="batchId" class="border rounded-md p-2 w-full">
+                        <option value="" disabled>Select Batch</option>
+                        @for (batch of filteredProductions; track batch.scheduleId) {
+                        <option [value]="batch.scheduleId" class="text-wrap p-4">
+                            {{ batch.scheduleId }} - {{ batch.recipeName }}
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Quality Controller Dropdown -->
+                <div>
+                    <label class="block font-medium mb-1">Quality Controller</label>
+                    <select formControlName="qualityControllerId" class="border rounded-md p-2 w-full">
+                        <option value="" disabled>Select Controller</option>
+                        @for (controller of qualityControllers; track controller.userId) {
+                        <option [value]="controller.userId">{{ controller.username }}</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Inspection Date -->
+                <div>
+                    <label class="block font-medium mb-1">Inspection Date</label>
+                    <input type="date" formControlName="inspectionDate" class="border rounded-md p-2 w-full" />
+                </div>
+
+                <!-- Status Dropdown -->
+                <div>
+                    <label class="block font-medium mb-1">Status</label>
+                    <select formControlName="status" class="border rounded-md p-2 w-full">
+                        @for (status of qualityStatusOptions; track status) {
+                        <option [value]="status">{{ status }}</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Test Results -->
+                <div class="col-span-2">
+                    <label class="block font-medium mb-1">Test Results</label>
+                    <textarea formControlName="testResults" rows="3" class="border rounded-md p-2 w-full"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" [disabled]="qualityForm.invalid"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                    Submit Quality Check
+                </button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <!-- Quality Checks Table -->
+    <div class="overflow-x-auto mt-10">
+        <h2 class="text-2xl font-bold mb-4">Quality Checks</h2>
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border px-4 py-2">Batch ID</th>
+                    <th class="border px-4 py-2">Controller</th>
+                    <th class="border px-4 py-2">Date</th>
+                    <th class="border px-4 py-2">Results</th>
+                    <th class="border px-4 py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (qualityChecks.length === 0) {
+                <tr>
+                    <td colspan="5" class="text-center border px-4 py-2">No quality checks found.</td>
+                </tr>
+                } @else {
+                @for (check of qualityChecks; track check.checkId) {
+                <tr class="hover:bg-gray-100 text-center">
+                    <td class="border px-4 py-2">{{ check.batchId }}</td>
+                    <td class="border px-4 py-2">{{ check.qualityControllerId }}</td>
+                    <td class="border px-4 py-2">{{ check.inspectionDate | date }}</td>
+                    <td class="border px-4 py-2">{{ check.testResults }}</td>
+                    <td class="border px-4 py-2">{{ qualityStatusOptions[check.status] }}</td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

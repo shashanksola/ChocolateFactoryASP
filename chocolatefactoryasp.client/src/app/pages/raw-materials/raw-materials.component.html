@@ -1,0 +1,133 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">Raw Material Management</h1>
+
+    <!-- Warehouse Filter -->
+    <div class="mb-6">
+        <label for="warehouse-filter" class="font-medium">Filter by Warehouse:</label>
+        <select id="warehouse-filter" class="border rounded-md p-2 ml-4" [(ngModel)]="selectedWarehouse"
+            (change)="filterByWarehouse()">
+            <option value="">All Warehouses</option>
+            @for (warehouse of warehouses; track warehouse.name;) {
+            <option [value]="warehouse.name">{{ warehouse.name }}</option>
+            }
+        </select>
+    </div>
+
+    <!-- Raw Material Table -->
+    <div class="overflow-x-auto mb-10">
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2">Name</th>
+                    <th class="border border-gray-300 px-4 py-2">Warehouse</th>
+                    <th class="border border-gray-300 px-4 py-2">Stock</th>
+                    <th class="border border-gray-300 px-4 py-2">Unit</th>
+                    <th class="border border-gray-300 px-4 py-2">Supplier</th>
+                    <th class="border border-gray-300 px-4 py-2">Cost/Unit</th>
+                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (filteredMaterials.length === 0) {
+                <tr>
+                    <td colspan="7" class="text-center border border-gray-300 px-4 py-2">
+                        No materials found.
+                    </td>
+                </tr>
+                } @else {
+                @for (filteredMaterial of filteredMaterials; track filteredMaterial.name) { <tr
+                    class="hover:bg-gray-100 text-center">
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredMaterial.name }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredMaterial.warehouseName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredMaterial.stockQuantity }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ units[filteredMaterial.unit] }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredMaterial.supplierName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredMaterial.costPerUnit | currency }}</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <!-- <button class="bg-yellow-500 text-white py-1 px-2 rounded-md"
+                            (click)="editMaterial(filteredMaterials)">
+                            Edit
+                        </button> -->
+                        <button class="bg-red-500 text-white py-1 px-2 rounded-md"
+                            (click)="deleteMaterial(filteredMaterial)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add/Edit Raw Material Form -->
+    <div class="container mx-auto p-6">
+        <!-- Add/Edit Raw Material Form -->
+        <div>
+            <h2 class="text-2xl font-bold mb-4">{{ editMode ? 'Edit' : 'Add' }} Raw Material</h2>
+            <form [formGroup]="rawMaterialForm" (ngSubmit)="saveRawMaterial()" class="space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Warehouse -->
+                    <div>
+                        <label class="block font-medium mb-1">Warehouse</label>
+                        <select formControlName="warehouseName" class="border rounded-md p-2 w-full">
+                            @for (warehouse of warehouses; track warehouse.name) {
+                            <option [value]="warehouse.name">{{ warehouse.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Supplier -->
+                    <div>
+                        <label class="block font-medium mb-1">Supplier</label>
+                        <select formControlName="supplierName" class="border rounded-md p-2 w-full">
+                            @for (supplier of suppliers; track supplier) {
+                            <option [value]="supplier">{{ supplier }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Material Name -->
+                    <div>
+                        <label class="block font-medium mb-1">Name</label>
+                        <input type="text" formControlName="name" class="border rounded-md p-2 w-full"
+                            placeholder="Material name" />
+                    </div>
+
+                    <!-- Stock Quantity -->
+                    <div>
+                        <label class="block font-medium mb-1">Stock Quantity</label>
+                        <input type="number" formControlName="stockQuantity" class="border rounded-md p-2 w-full"
+                            placeholder="Stock quantity" />
+                    </div>
+
+                    <!-- Unit -->
+                    <div>
+                        <label class="block font-medium mb-1">Unit</label>
+                        <select formControlName="unit" class="border rounded-md p-2 w-full">
+                            @for (unit of units; track unit) {
+                            <option [value]="unit">{{ unit }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Cost Per Unit -->
+                    <div>
+                        <label class="block font-medium mb-1">Cost Per Unit</label>
+                        <input type="number" formControlName="costPerUnit" class="border rounded-md p-2 w-full"
+                            placeholder="Cost per unit" />
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-right">
+                    <button type="submit" [disabled]="rawMaterialForm.invalid"
+                        class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                        {{ editMode ? 'Update' : 'Add' }} Raw Material
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">Production Management</h1>
+
+    <!-- Production Schedules Table -->
+    <div class="overflow-x-auto mb-10">
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2">Recipe Name</th>
+                    <th class="border border-gray-300 px-4 py-2">Start Date</th>
+                    <th class="border border-gray-300 px-4 py-2">End Date</th>
+                    <th class="border border-gray-300 px-4 py-2">Shift</th>
+                    <th class="border border-gray-300 px-4 py-2">Supervisor</th>
+                    <th class="border border-gray-300 px-4 py-2">Status</th>
+                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (filteredSchedules.length === 0) {
+                <tr>
+                    <td colspan="7" class="text-center border border-gray-300 px-4 py-2">
+                        No schedules found.
+                    </td>
+                </tr>
+                } @else {
+                @for (filteredSchedule of filteredSchedules; track filteredSchedule.ScheduleId) {
+
+                <tr class="hover:bg-gray-100 text-center">
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredSchedule.recipeName }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ filteredSchedule.startDate | date }}</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        {{ filteredSchedule.endDate ? (filteredSchedule.endDate | date) : 'N/A' }}
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2">{{ shifts[filteredSchedule.shift] }}</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        {{ getSupervisorName(filteredSchedule.supervisorId) }}
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2">{{ status[filteredSchedule.status] }}</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <button class="bg-yellow-500 text-white py-1 px-2 rounded-md"
+                            (click)="editSchedule(filteredSchedule)">
+                            Edit
+                        </button>
+                        @if (filteredSchedule.status !== 2) {
+                        <button class="bg-green-600 text-white py-1 px-2 rounded-md m-2"
+                            (click)="completeSchedule(filteredSchedule)">
+                            Complete
+                        </button>
+                        }
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add/Edit Production Schedule Form -->
+    <div>
+        <h2 class="text-2xl font-bold mb-4">{{ editMode ? 'Edit' : 'Add' }} Production Schedule</h2>
+        <form [formGroup]="productionForm" (ngSubmit)="saveSchedule()" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Recipe Name -->
+                <div>
+                    <label class="block font-medium mb-1">Recipe Name</label>
+                    <select formControlName="recipeName" class="border rounded-md p-2 w-full"
+                        (change)="onRecipeChange()">
+                        <option value="" disabled>Select a Recipe</option>
+                        @for (recipe of recipes; track recipe.name) {
+                        <option [value]="recipe.name">{{ recipe.name }}</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Start Date -->
+                <div>
+                    <label class="block font-medium mb-1">Start Date</label>
+                    <input type="date" formControlName="startDate" class="border rounded-md p-2 w-full" />
+                </div>
+
+                <!-- End Date -->
+                <div>
+                    <label class="block font-medium mb-1">End Date</label>
+                    <input type="date" formControlName="endDate" class="border rounded-md p-2 w-full" />
+                </div>
+
+                <!-- Shift -->
+                <div>
+                    <label class="block font-medium mb-1">Shift</label>
+                    <select formControlName="shift" class="border rounded-md p-2 w-full">
+                        <option value="0">Morning</option>
+                        <option value="1">Afternoon</option>
+                        <option value="2">Night</option>
+                    </select>
+                </div>
+
+                <!-- Supervisor -->
+                <div>
+                    <label class="block font-medium mb-1">Supervisor</label>
+                    <select formControlName="supervisorId" class="border rounded-md p-2 w-full">
+                        @for (supervisor of supervisors; track supervisor.userId) {
+                        <option [value]="supervisor.userId">{{ supervisor.username }}</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label class="block font-medium mb-1">Status</label>
+                    <select formControlName="status" class="border rounded-md p-2 w-full">
+                        <option value="0">Scheduled</option>
+                        <option value="1">In Progress</option>
+                        <option value="2">Completed</option>
+                        <option value="3">Canceled</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Ingredients Table -->
+            @if (ingredients.length > 0) {
+            <div>
+                <h3 class="text-lg font-bold mb-2">Ingredients Needed</h3>
+                <table class="table-auto w-full border-collapse border border-gray-300">
+                    <thead class="bg-gray-200 text-gray-700">
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-2">Ingredient</th>
+                            <th class="border border-gray-300 px-4 py-2">Required Quantity</th>
+                            <th class="border border-gray-300 px-4 py-2">Available Quantity</th>
+                            <th class="border border-gray-300 px-4 py-2">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (ingredient of ingredients; track ingredient.ingredientName) {
+                        <tr class="text-center">
+                            <td class="border border-gray-300 px-4 py-2">{{ ingredient.ingredientName }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ ingredient.requiredQuantity }}</td>
+                            <td class="border border-gray-300 px-4 py-2"
+                                [ngClass]="{ 'text-red-500': ingredient.availableQuantity < ingredient.requiredQuantity }">
+                                {{ ingredient.availableQuantity }}
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2">{{ units[ingredient.unit] }}</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            }
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" [disabled]="productionForm.invalid"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                    {{ editMode ? 'Update' : 'Add' }} Schedule
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

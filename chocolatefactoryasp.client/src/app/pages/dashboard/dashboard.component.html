@@ -1,0 +1,47 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6 text-center">Dashboard</h1>
+
+    <!-- Button to Download PDF -->
+    <div class="mb-4 text-center">
+        <button (click)="downloadPDF()" class="bg-blue-500 text-white py-2 px-4 rounded-md">Download Dashboard as
+            PDF</button>
+    </div>
+
+    <!-- Dashboard Information Section to capture for PDF -->
+    <div id="dashboard-info">
+        <!-- Production Chart -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Production Status</h2>
+            <ngx-charts-bar-vertical [results]="productionData" [view]="view" [scheme]="colorScheme" [xAxis]="true"
+                [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Recipes"
+                yAxisLabel="In Progress Count">
+            </ngx-charts-bar-vertical>
+        </div>
+
+        <!-- Warehouse Stock Chart -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Warehouse Stock Levels</h2>
+            <ngx-charts-pie-chart [results]="warehouseStockData" [view]="view" [scheme]="colorScheme" [legend]="true"
+                [labels]="true" [doughnut]="false">
+            </ngx-charts-pie-chart>
+        </div>
+
+        <!-- Quality Status -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Quality Status</h2>
+            <ngx-charts-pie-chart [results]="qualityStatusData" [view]="view" [scheme]="colorScheme" [legend]="true"
+                [labels]="true" [doughnut]="true">
+            </ngx-charts-pie-chart>
+        </div>
+
+        <!-- Sales Status -->
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Sales Status</h2>
+            <ngx-charts-bar-horizontal [results]="salesData" [view]="view" [scheme]="colorScheme" [xAxis]="true"
+                [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true"
+                xAxisLabel="Quantity Sold" yAxisLabel="Order Status">
+            </ngx-charts-bar-horizontal>
+        </div>
+    </div>
+</div>

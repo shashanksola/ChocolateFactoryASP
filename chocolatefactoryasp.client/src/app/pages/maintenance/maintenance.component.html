@@ -1,0 +1,114 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">Maintenance Management</h1>
+
+    <!-- Add/Edit Maintenance Record Form -->
+    @if (role === 'FactoryManager' || role === 'Technician') {
+    <div>
+        <h2 class="text-2xl font-bold mb-4">
+            {{ editMode ? 'Edit Maintenance Record' : 'Add Maintenance Record' }}
+        </h2>
+        <form [formGroup]="maintenanceForm" (ngSubmit)="submitMaintenanceRecord()" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Equipment Name Dropdown -->
+                <div>
+                    <label class="block font-medium mb-1">Equipment Name</label>
+                    <select formControlName="equipmentName" class="border rounded-md p-2 w-full">
+                        <option value="" disabled>Select Equipment</option>
+                        @for (equipment of equipmentList; track equipment) {
+                        <option [value]="equipment">{{ equipment }}</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Maintenance Date -->
+                <div>
+                    <label class="block font-medium mb-1">Maintenance Date</label>
+                    <input type="date" formControlName="maintenanceDate" class="border rounded-md p-2 w-full" />
+                </div>
+
+                <!-- Technician -->
+                <div>
+                    <label class="block font-medium mb-1">Technician</label>
+                    <select formControlName="technician" class="border rounded-md p-2 w-full">
+                        <option value="" disabled>Select Technician</option>
+                        @for (technician of technicians; track technician.userId) {
+                        <option [value]="technician.username">{{ technician.username }}</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Next Scheduled Date -->
+                <div>
+                    <label class="block font-medium mb-1">Next Scheduled Date</label>
+                    <input type="date" formControlName="nextScheduledDate" class="border rounded-md p-2 w-full" />
+                </div>
+
+                <!-- Details -->
+                <div class="col-span-2">
+                    <label class="block font-medium mb-1">Details</label>
+                    <textarea formControlName="details" rows="3" class="border rounded-md p-2 w-full"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" [disabled]="maintenanceForm.invalid"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                    {{ editMode ? 'Update Record' : 'Add Record' }}
+                </button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <!-- Maintenance Records Table -->
+    <div class="overflow-x-auto mt-10">
+        <h2 class="text-2xl font-bold mb-4">Maintenance Records</h2>
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border px-4 py-2">Equipment</th>
+                    <th class="border px-4 py-2">Maintenance Date</th>
+                    <th class="border px-4 py-2">Technician</th>
+                    <th class="border px-4 py-2">Next Scheduled Date</th>
+                    <th class="border px-4 py-2">Details</th>
+                    <th class="border px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (maintenanceRecords.length === 0) {
+                <tr>
+                    <td colspan="6" class="text-center border px-4 py-2">No maintenance records found.</td>
+                </tr>
+                } @else {
+                @for (record of maintenanceRecords; track record.recordId) {
+                <tr class="hover:bg-gray-100 text-center">
+                    <td class="border px-4 py-2">{{ record.equipmentName }}</td>
+                    <td class="border px-4 py-2">{{ record.maintenanceDate | date }}</td>
+                    <td class="border px-4 py-2">{{ record.technician }}</td>
+                    <td class="border px-4 py-2">
+                        {{ record.nextScheduledDate ? (record.nextScheduledDate | date) : 'N/A' }}
+                    </td>
+                    <td class="border px-4 py-2">{{ record.details || 'N/A' }}</td>
+                    <td class="border px-4 py-2 space-x-2">
+                        @if (role === 'FactoryManager' || role === 'Technician') {
+                        <button class="bg-yellow-500 text-white px-2 py-1 rounded"
+                            (click)="editMaintenanceRecord(record)">
+                            Edit
+                        </button>
+                        }
+                        @if (role === 'FactoryManager') {
+                        <button class="bg-red-500 text-white px-2 py-1 rounded"
+                            (click)="deleteMaintenanceRecord(record.recordId)">
+                            Delete
+                        </button>
+                        }
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

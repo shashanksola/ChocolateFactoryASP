@@ -1,0 +1,6 @@
+@ChocolateFactoryASP.Server_HostAddress = http://localhost:5234
+
+GET {{ChocolateFactoryASP.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

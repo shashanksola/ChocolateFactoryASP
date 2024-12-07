@@ -1,0 +1,125 @@
+<div class="container mx-auto p-6">
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6">Supplier Management</h1>
+
+    <!-- Supplier Table -->
+    <div class="overflow-x-auto mb-10">
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2">Name</th>
+                    <th class="border border-gray-300 px-4 py-2">Address</th>
+                    <th class="border border-gray-300 px-4 py-2">Phone</th>
+                    <th class="border border-gray-300 px-4 py-2">Email</th>
+                    <th class="border border-gray-300 px-4 py-2">Notes</th>
+                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (suppliers.length === 0) {
+                <tr>
+                    <td colspan="6" class="text-center border border-gray-300 px-4 py-2">
+                        No suppliers found.
+                    </td>
+                </tr>
+                } @else {
+                @for (supplier of suppliers; track supplier.supplierId) {
+                <tr class="hover:bg-gray-100 text-center">
+                    <td class="border border-gray-300 px-4 py-2">{{ supplier.name }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ supplier.address }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ supplier.phone }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ supplier.email }}</td>
+                    <td class="border border-gray-300 px-4 py-2">{{ supplier.notes || 'N/A' }}</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <button class="bg-yellow-500 text-white py-1 px-2 rounded-md mr-2 mb-2"
+                            (click)="editSupplier(supplier)">
+                            Edit
+                        </button>
+                        <button class="bg-red-500 text-white py-1 px-2 rounded-md"
+                            (click)="deleteSupplier(supplier.supplierId)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add/Edit Supplier Form -->
+    <div>
+        <h2 class="text-2xl font-bold mb-4">{{ editMode ? 'Edit' : 'Add' }} Supplier</h2>
+        <form [formGroup]="supplierForm" (ngSubmit)="saveSupplier()" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <!-- Name -->
+                <div>
+                    <label class="block font-medium mb-1">Name</label>
+                    <input type="text" formControlName="name" class="border rounded-md p-2 w-full"
+                        placeholder="Supplier name" />
+                    @if (supplierForm.get('name')?.touched && supplierForm.get('name')?.invalid) {
+                    <div class="text-red-500 text-sm">
+                        Name is required and must not exceed 200 characters.
+                    </div>
+                    }
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <label class="block font-medium mb-1">Address</label>
+                    <input type="text" formControlName="address" class="border rounded-md p-2 w-full"
+                        placeholder="Supplier address" />
+                    @if (supplierForm.get('address')?.touched && supplierForm.get('address')?.invalid) {
+                    <div class="text-red-500 text-sm">
+                        Address is required and must not exceed 500 characters.
+                    </div>
+                    }
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label class="block font-medium mb-1">Phone</label>
+                    <input type="text" formControlName="phone" class="border rounded-md p-2 w-full"
+                        placeholder="Supplier phone" />
+                    @if (supplierForm.get('phone')?.touched && supplierForm.get('phone')?.invalid) {
+                    <div class="text-red-500 text-sm">
+                        Phone is required and must be a valid 10-digit number.
+                    </div>
+                    }
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block font-medium mb-1">Email</label>
+                    <input type="email" formControlName="email" class="border rounded-md p-2 w-full"
+                        placeholder="Supplier email" />
+                    @if (supplierForm.get('email')?.touched && supplierForm.get('email')?.invalid) {
+                    <div class="text-red-500 text-sm">
+                        A valid email address is required.
+                    </div>
+                    }
+                </div>
+
+                <!-- Notes -->
+                <div class="col-span-2">
+                    <label class="block font-medium mb-1">Notes</label>
+                    <textarea formControlName="notes" class="border rounded-md p-2 w-full"
+                        placeholder="Additional notes"></textarea>
+                    @if (supplierForm.get('notes')?.touched && supplierForm.get('notes')?.invalid) {
+                    <div class="text-red-500 text-sm">
+                        Notes cannot exceed 500 characters.
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-right">
+                <button type="submit" [disabled]="supplierForm.invalid"
+                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                    {{ editMode ? 'Update' : 'Add' }} Supplier
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
