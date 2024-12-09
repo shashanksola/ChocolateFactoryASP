@@ -31,6 +31,16 @@ namespace ChocolateFactory.Services
             await _repository.AddOrderAsync(order);
         }
 
+        public async Task<Warehouse> GetWarehouseFromFinishedGoodId(Guid productId)
+        {
+            FinishedGood good = await _finishedGoodsRepository.GetFinishedGoodByIdAsync(productId);
+            string warehouse = good.WarehouseLocation;
+
+            Warehouse warehouseItem = await _warehouseRepository.GetWarehouseByNameAsync(warehouse);
+            
+            return warehouseItem;
+        }
+
         public async Task DeductWarehouseStockAsync(Guid productId, int quantity)
         {
             FinishedGood good = await _finishedGoodsRepository.GetFinishedGoodByIdAsync(productId);
@@ -42,6 +52,12 @@ namespace ChocolateFactory.Services
 
             warehouseItem.CurrentStockLevel -= quantity;
             await _warehouseRepository.UpdateWarehouseAsync(warehouseItem);
+        }
+
+        public async Task<FinishedGood> GetFinishedGoodById(Guid productId)
+        {
+            FinishedGood good = await _finishedGoodsRepository.GetFinishedGoodByIdAsync(productId);
+            return good;
         }
 
         public async Task DeductFinishedGoodStockAsync(Guid productId, int quantity)

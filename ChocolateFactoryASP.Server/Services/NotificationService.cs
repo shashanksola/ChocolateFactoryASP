@@ -39,20 +39,13 @@ namespace ChocolateFactory.Services
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
                 var response = await client.SendEmailAsync(msg);
 
-                // Log response for debugging or further error handling
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    var responseBody = await response.Body.ReadAsStringAsync();
-                    _logger.LogError($"Failed to send email to {toEmail}. Response: {response.StatusCode} - {responseBody}");
-                    throw new Exception($"Failed to send email to {toEmail}. Response: {response.StatusCode} - {responseBody}");
-                }
+                return;
 
-                _logger.LogInformation($"Email sent successfully to {toEmail}");
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error sending email to {toEmail}: {ex.Message}");
-                throw;
+                return;
             }
         }
 

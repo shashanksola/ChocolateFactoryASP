@@ -1,23 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { Notyf } from 'notyf';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sales',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './sales.component.html',
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule]
 })
 export class SalesComponent implements OnInit {
   salesForm!: FormGroup;
-  finishedGoods: any[] = []; // Approved products available for sales
-  salesOrders: any[] = []; // Orders already placed
-  loggedInUserId: string = ''; // Placeholder for SalesRepresentative ID
+  finishedGoods: any[] = []; // Products for sale
+  salesOrders: any[] = []; // Existing sales orders
+  loggedInUserId: string = ''; // Placeholder for user ID
   headers: HttpHeaders;
   apiUrl = 'https://localhost:7051/api';
-
   notyf = new Notyf();
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
@@ -30,79 +29,112 @@ export class SalesComponent implements OnInit {
     this.initializeForm();
     this.fetchApprovedProducts();
     this.fetchSalesOrders();
-
-    this.loggedInUserId = localStorage.getItem('userId') || "";
   }
 
-  // Simulate getting the logged-in SalesRepresentative's ID
+  /** Get Logged-In User */
   getLoggedInUserId(): void {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      this.loggedInUserId = JSON.parse(userData).userId; // Assuming stored user info contains userId
-    }
+    this.loggedInUserId = localStorage.getItem('userId') || '';
   }
 
-  // Initialize Form
+  /** Validator for Delivery Date > Order Date */
+  deliveryDateValidator(control: AbstractControl): ValidationErrors | null {
+    const orderDate = new Date(control.get('orderDate')?.value);
+    const deliveryDate = new Date(control.get('deliveryDate')?.value);
+    if (deliveryDate <= orderDate) {
+      return { invalidDeliveryDate: true }; // Custom error
+    }
+    return null;
+  }
+
+  /** Initialize Form with Validators */
   initializeForm(): void {
     const today = new Date();
-    const deliveryDate = new Date();
-    deliveryDate.setDate(today.getDate() + 3); // Add 3 days to today
+    const deliveryDate = new Date(today);
+    deliveryDate.setDate(today.getDate() + 3);
 
-    this.salesForm = this.fb.group({
-      productId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]],
-      orderDate: [today.toISOString().split('T')[0], Validators.required], // Current date
-      deliveryDate: [deliveryDate.toISOString().split('T')[0], Validators.required], // 3 days from today
-    });
+    this.salesForm = this.fb.group(
+      {
+        productId: ['', Validators.required],
+        quantity: [1, [Validators.required, Validators.min(1)]],
+        orderDate: [this.formatToISOString(today), Validators.required],
+        deliveryDate: [this.formatToISOString(deliveryDate), Validators.required],
+      },
+      { validators: this.deliveryDateValidator }
+    );
   }
 
-  // Fetch approved products for sales
+  /** Convert Date to ISO String with UTC format */
+  formatToISOString(date: Date): string {
+    return date.toISOString();
+  }
+
+  /** Fetch Approved Products */
   fetchApprovedProducts(): void {
     this.http.get<any[]>(`${this.apiUrl}/Packaging`, { headers: this.headers }).subscribe({
       next: (data) => {
-        console.log(data);
         this.finishedGoods = data.filter((item) => item.quantity > 0);
       },
-      error: () => this.notyf.error('Error fetching finished goods'),
+      error: () => this.notyf.error('Failed to fetch finished goods.'),
     });
   }
 
-  // Fetch existing sales orders
+  /** Fetch Existing Sales Orders */
   fetchSalesOrders(): void {
     this.http.get<any[]>(`${this.apiUrl}/Sales`, { headers: this.headers }).subscribe({
       next: (data) => {
         this.salesOrders = data;
       },
-      error: () => this.notyf.error('Error fetching sales orders'),
+      error: () => this.notyf.error('Failed to fetch sales orders.'),
     });
   }
 
-  // Submit Sales Order
+  /** Submit Sales Order */
   submitOrder(): void {
+    console.log(this.salesForm);
     if (this.salesForm.invalid) {
-      this.notyf.error('Please fill in all required fields.');
+      if (this.salesForm.errors?.['invalidDeliveryDate']) {
+        this.notyf.error('Delivery date must be after the order date.');
+      } else {
+        this.notyf.error('Please fill in all required fields.');
+      }
       return;
     }
 
-    let order = this.salesForm.value;
-    order.status = "Sold";
-    order.customerId = this.loggedInUserId;
+    const order = {
+      ...this.salesForm.value,
+      orderDate: this.formatToISOString(new Date(this.salesForm.value.orderDate)),
+      deliveryDate: this.formatToISOString(new Date(this.salesForm.value.deliveryDate)),
+      status: 'Sold',
+      customerId: this.loggedInUserId,
+    };
+
     console.log(order);
-
-
 
     this.http.post(`${this.apiUrl}/Sales`, order, { headers: this.headers }).subscribe({
       next: () => {
         this.notyf.success('Order placed successfully!');
         this.fetchSalesOrders();
         this.fetchApprovedProducts();
-        this.salesForm.reset();
-        this.salesForm.patchValue({ orderDate: new Date().toISOString().split('T')[0] });
+        this.resetForm();
       },
       error: (err) => {
         console.error(err);
-        this.notyf.error('Error placing order');
+        this.notyf.error('Error placing order.');
       },
+    });
+  }
+
+  /** Reset Form and Reinitialize Dates */
+  resetForm(): void {
+    const today = new Date();
+    const deliveryDate = new Date(today);
+    deliveryDate.setDate(today.getDate() + 3);
+
+    this.salesForm.reset({
+      productId: '',
+      quantity: 1,
+      orderDate: this.formatToISOString(today),
+      deliveryDate: this.formatToISOString(deliveryDate),
     });
   }
 }

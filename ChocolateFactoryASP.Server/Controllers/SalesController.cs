@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ChocolateFactory.Services;
 using ChocolateFactory.Models;
+using ChocolateFactory.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChocolateFactory.Controllers
 {
@@ -11,10 +13,12 @@ namespace ChocolateFactory.Controllers
     public class SalesController : ControllerBase
     {
         private readonly SalesService _service;
+        private readonly ApplicationDbContext _context;
 
-        public SalesController(SalesService service)
+        public SalesController(SalesService service, ApplicationDbContext context)
         {
             _service = service;
+            _context = context;
         }
 
         [HttpGet]
@@ -30,30 +34,21 @@ namespace ChocolateFactory.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Begin transaction
-            using (var transaction = await _service.BeginTransactionAsync())
-            {
-                try
-                {
-                    // Add the order
-                    await _service.AddOrderAsync(order);
-
-                    // Deduct stock in Warehouse
-                    await _service.DeductWarehouseStockAsync(order.ProductId, order.Quantity);
-
-                    // Deduct stock in FinishedGood table
-                    await _service.DeductFinishedGoodStockAsync(order.ProductId, order.Quantity);
-
-                    // Commit transaction
-                    await transaction.CommitAsync();
-                }
-                catch (Exception ex)
-                {
-                    // Rollback transaction on error
-                    await transaction.RollbackAsync();
-                    return BadRequest($"Failed to place order: {ex.Message}");
-                }
+            Warehouse ware = await _service.GetWarehouseFromFinishedGoodId(order.ProductId);
+            if (ware != null && ware.CurrentStockLevel - order.Quantity >= 0) {
+                return BadRequest(new { message = "Warehouse doesnt have the capacity" });
             }
+
+            FinishedGood good = await _service.GetFinishedGoodById(order.ProductId);
+            if (good != null && good.Quantity < order.Quantity) {
+                return BadRequest(new { message = "Finished Good doesnt have the Quantity" });
+            }
+
+            await _service.AddOrderAsync(order);
+
+            await _service.DeductWarehouseStockAsync(order.ProductId, order.Quantity);
+
+            await _service.DeductFinishedGoodStockAsync(order.ProductId, order.Quantity);
 
             return Ok(order);
         }

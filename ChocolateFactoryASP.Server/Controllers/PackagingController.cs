@@ -7,7 +7,7 @@ namespace ChocolateFactory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "PackagingStaff,FactoryManager")]
+    [Authorize(Roles = "PackagingStaff,FactoryManager,SalesRepresentative")]
     public class PackagingController : ControllerBase
     {
         private readonly PackagingService _service;
@@ -24,7 +24,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "SalesRepresentative")]
+        [Authorize(Roles = "PackagingStaff,FactoryManager,SalesRepresentative")]
         public async Task<IActionResult> GetAllFinishedGoods()
         {
             var goods = await _service.GetAllFinishedGoodsAsync();
@@ -33,6 +33,7 @@ namespace ChocolateFactory.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "PackagingStaff,FactoryManager")]
         public async Task<IActionResult> AddFinishedGoodAsync([FromBody] FinishedGood finishedGood)
         {
             if (!ModelState.IsValid)

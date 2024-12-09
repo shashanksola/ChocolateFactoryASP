@@ -7,7 +7,7 @@ namespace ChocolateFactory.Models
     public class SalesOrder
     {
         [Key]
-        public Guid OrderId { get; set; }
+        public Guid? OrderId { get; set; } = Guid.NewGuid();
 
         [Required]
         public required Guid CustomerId { get; set; }

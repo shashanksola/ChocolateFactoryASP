@@ -7,7 +7,7 @@ namespace ChocolateFactory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "QualityController,FactoryManager")]
+    [Authorize(Roles = "QualityController,FactoryManager,PackagingStaff,SalesRepresentative")]
     public class QualityController : ControllerBase
     {
         private readonly QualityControlService _service;
@@ -22,7 +22,6 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "PackagingStaff")]
         public async Task<IActionResult> GetAllChecks()
         {
             var checks = await _service.GetAllChecksAsync();

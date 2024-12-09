@@ -3,51 +3,41 @@
     <h1 class="text-3xl font-bold mb-6">Sales Management</h1>
 
     <!-- Sales Form -->
-    <div class="mb-10">
-        <h2 class="text-2xl font-bold mb-4">Place an Order</h2>
-        <form [formGroup]="salesForm" (ngSubmit)="submitOrder()" class="space-y-6">
-            <!-- Product Dropdown -->
-            <div>
-                <label class="block font-medium mb-1">Product</label>
-                <select formControlName="productId" class="border rounded-md p-2 w-full">
-                    <option value="" disabled>Select Product</option>
-                    @for (product of finishedGoods; track product.productId) {
-                    @if (product.quantity) {
+    <form [formGroup]="salesForm" (ngSubmit)="submitOrder()" class="space-y-6 mb-10">
+        <div>
+            <label class="block font-medium mb-1">Product</label>
+            <select formControlName="productId" class="border rounded-md p-2 w-full">
+                <option value="" disabled>Select Product</option>
+                <ng-container *ngFor="let product of finishedGoods">
                     <option [value]="product.productId">
                         {{ product.productId }} - Quantity: {{ product.quantity }}
                     </option>
-                    }
-                    }
-                </select>
-            </div>
+                </ng-container>
+            </select>
+        </div>
 
-            <!-- Quantity -->
-            <div>
-                <label class="block font-medium mb-1">Quantity</label>
-                <input type="number" formControlName="quantity" min="1" class="border rounded-md p-2 w-full" />
-            </div>
+        <div>
+            <label class="block font-medium mb-1">Quantity</label>
+            <input type="number" formControlName="quantity" min="1" class="border rounded-md p-2 w-full" />
+        </div>
 
-            <!-- Order Date -->
-            <div>
-                <label class="block font-medium mb-1">Order Date</label>
-                <input type="date" formControlName="orderDate" class="border rounded-md p-2 w-full" />
-            </div>
+        <div>
+            <label class="block font-medium mb-1">Order Date</label>
+            <input type="date" formControlName="orderDate" class="border rounded-md p-2 w-full" />
+        </div>
 
-            <!-- Delivery Date -->
-            <div>
-                <label class="block font-medium mb-1">Delivery Date</label>
-                <input type="date" formControlName="deliveryDate" class="border rounded-md p-2 w-full" />
-            </div>
+        <div>
+            <label class="block font-medium mb-1">Delivery Date</label>
+            <input type="date" formControlName="deliveryDate" class="border rounded-md p-2 w-full" />
+        </div>
 
-            <!-- Submit Button -->
-            <div class="text-right">
-                <button type="submit" [disabled]="salesForm.invalid"
-                    class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
-                    Place Order
-                </button>
-            </div>
-        </form>
-    </div>
+        <div class="text-right">
+            <button type="submit" [disabled]="salesForm.invalid"
+                class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300">
+                Place Order
+            </button>
+        </div>
+    </form>
 
     <!-- Sales Orders Table -->
     <div class="overflow-x-auto">
@@ -63,21 +53,16 @@
                 </tr>
             </thead>
             <tbody>
-                @if (salesOrders.length === 0) {
-                <tr>
+                <tr *ngIf="salesOrders.length === 0">
                     <td colspan="5" class="text-center border px-4 py-2">No orders found.</td>
                 </tr>
-                } @else {
-                @for (order of salesOrders; track order.orderId) {
-                <tr class="text-center hover:bg-gray-100">
+                <tr *ngFor="let order of salesOrders" class="text-center hover:bg-gray-100">
                     <td class="border px-4 py-2">{{ order.productId }}</td>
                     <td class="border px-4 py-2">{{ order.quantity }}</td>
-                    <td class="border px-4 py-2">{{ order.orderDate | date }}</td>
-                    <td class="border px-4 py-2">{{ order.deliveryDate || 'N/A' }}</td>
+                    <td class="border px-4 py-2">{{ order.orderDate }}</td>
+                    <td class="border px-4 py-2">{{ order.deliveryDate }}</td>
                     <td class="border px-4 py-2">{{ order.status }}</td>
                 </tr>
-                }
-                }
             </tbody>
         </table>
     </div>
