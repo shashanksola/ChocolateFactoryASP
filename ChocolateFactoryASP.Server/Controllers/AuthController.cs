@@ -12,10 +12,12 @@ namespace ChocolateFactory.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
+        private readonly NotificationService _notificationService;
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, NotificationService notificationService)
         {
             _authService = authService;
+            _notificationService = notificationService;
         }
 
         [HttpPost("login")]
@@ -30,7 +32,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPost("register")]
-        //[Authorize(Roles ="FactoryManager")]
+        [Authorize(Roles ="FactoryManager")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest registerRequest)
         {
 
@@ -46,7 +48,35 @@ namespace ChocolateFactory.Controllers
 
             var success = await _authService.RegisterUserAsync(newUser);
 
-            if (!success) return BadRequest("User with username already exists");
+            if (!success) return BadRequest(new { message = "User with username already exists" });
+
+            string sub = "Dear new user, you have been successfully registered, your credentials are Username: " + newUser.Username + ", Password: " + registerRequest.Password;
+            await _notificationService.SendEmailAsync(newUser.Email, "Welcome to Choco.co", sub);
+
+            return Ok();
+        }
+
+        [HttpPost("registerNew")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterNewUser([FromBody] UserRegisterRequest registerRequest)
+        {
+            var newUser = new User
+            {
+                Username = registerRequest.Username,
+                FirstName = registerRequest.FirstName,
+                LastName = registerRequest.LastName,
+                PasswordHash = registerRequest.Password,
+                Email = registerRequest.Email,
+                Role = registerRequest.Role,
+                IsActive = false
+            };
+
+            var success = await _authService.RegisterUserAsync(newUser);
+
+            if (!success) return BadRequest(new { message = "User with username already exists" });
+
+            string sub = "Dear new user, you have been successfully registered, your credentials are Username: " + newUser.Username + ", Password: " + registerRequest.Password + " . Plese wait till the Factory Manager authorizer your request.";
+            await _notificationService.SendEmailAsync(newUser.Email, "Welcome to Choco.co", sub);
 
             return Ok();
         }

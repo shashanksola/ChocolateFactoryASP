@@ -33,5 +33,10 @@ namespace ChocolateFactory.Services
         {
             return await _userRepository.GetUserByIdAsync(id);
         }
+
+        public async Task UpdateUserActive(User user)
+        {
+            await _userRepository.UpdateUserAsync(user);
+        }
     }
 }
