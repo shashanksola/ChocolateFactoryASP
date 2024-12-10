@@ -110,4 +110,17 @@ export class UsersComponent implements OnInit {
       },
     });
   }
+
+  activateUser(user: any) {
+    console.log(user);
+    this.http.patch<any>(`https://localhost:7051/api/User/setActive/${user.userId}`, null, { headers: this.headers }).subscribe({
+      next: (response) => {
+        this.notyf.success(response.message);
+        this.fetchAllUsers();
+      }, error: (err) => {
+        console.error(err);
+        this.notyf.error('Trouble setting user to active')
+      }
+    })
+  }
 }
