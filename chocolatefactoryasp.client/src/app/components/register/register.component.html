@@ -1,0 +1,105 @@
+<section class="h-screen w-screen flex justify-center items-center bg-slate-900">
+    <a class="text-white font-bold text-2xl top-0 left-0 absolute p-8" routerLink="/">Go Back</a>
+    <div class="bg-white text-center rounded-lg p-8 lg:w-1/2 lg:flex">
+        <div class="flex-col self-stretch justify-between text-start p-2 pr-8">
+            <div class="text-start">
+                <h1 class="text-4xl font-bold">Register</h1>
+                <p class="mt-4">Fill in your details to register for Choco.co Employee Portal</p>
+            </div>
+            <div class="my-8">
+                <a routerLink="/login">Already Have an Account? <span class="underline">Login</span></a>
+            </div>
+        </div>
+        <form [formGroup]="userRegisterForm" (ngSubmit)="onSubmit()" class="flex flex-col items-start space-y-4 w-full">
+
+            <!-- Username Field -->
+            <input id="username" placeholder="Username" formControlName="username" type="text"
+                class="focus:outline-none border-b-4 border-slate-950 w-full" />
+            @if (userRegisterForm.get('username')?.touched && userRegisterForm.get('username')?.invalid) {
+            <div class="text-red-700 text-sm mt-1">
+                @if (userRegisterForm.get('username')?.errors?.['required']) {
+                <div>Username is required.</div>
+                }
+                @if (userRegisterForm.get('username')?.errors?.['minlength']) {
+                <div>Username must be at least 3 characters long.</div>
+                }
+                @if (userRegisterForm.get('username')?.errors?.['maxlength']) {
+                <div>Username cannot exceed 100 characters.</div>
+                }
+            </div>
+            }
+
+            <!-- First Name Field -->
+            <input id="firstName" placeholder="First Name" formControlName="firstName" type="text"
+                class="focus:outline-none border-b-4 border-slate-950 w-full" />
+            @if (userRegisterForm.get('firstName')?.touched && userRegisterForm.get('firstName')?.invalid) {
+            <div class="text-red-700 text-sm mt-1">
+                @if (userRegisterForm.get('firstName')?.errors?.['required']) {
+                <div>First name is required.</div>
+                }
+                @if (userRegisterForm.get('firstName')?.errors?.['maxlength']) {
+                <div>First name cannot exceed 100 characters.</div>
+                }
+            </div>
+            }
+
+            <!-- Last Name Field -->
+            <input id="lastName" placeholder="Last Name" formControlName="lastName" type="text"
+                class="focus:outline-none border-b-4 border-slate-950 w-full" />
+            @if (userRegisterForm.get('lastName')?.touched && userRegisterForm.get('lastName')?.invalid) {
+            <div class="text-red-700 text-sm mt-1">
+                @if (userRegisterForm.get('lastName')?.errors?.['required']) {
+                <div>Last name is required.</div>
+                }
+                @if (userRegisterForm.get('lastName')?.errors?.['maxlength']) {
+                <div>Last name cannot exceed 100 characters.</div>
+                }
+            </div>
+            }
+
+            <!-- Email Field -->
+            <input id="email" placeholder="Email" formControlName="email" type="email"
+                class="focus:outline-none border-b-4 border-slate-950 w-full" />
+            @if (userRegisterForm.get('email')?.touched && userRegisterForm.get('email')?.invalid) {
+            <div class="text-red-700 text-sm mt-1">
+                @if (userRegisterForm.get('email')?.errors?.['required']) {
+                <div>Email is required.</div>
+                }
+                @if (userRegisterForm.get('email')?.errors?.['email']) {
+                <div>Please enter a valid email address.</div>
+                }
+            </div>
+            }
+
+            <!-- Password Field -->
+            <input id="password" placeholder="Password" formControlName="password" type="password"
+                class="focus:outline-none border-b-4 border-slate-950 w-full" />
+            @if (userRegisterForm.get('password')?.touched && userRegisterForm.get('password')?.invalid) {
+            <div class="text-red-700 text-sm mt-1">
+                @if (userRegisterForm.get('password')?.errors?.['required']) {
+                <div>Password is required.</div>
+                }
+                @if (userRegisterForm.get('password')?.errors?.['minlength']) {
+                <div>Password must be at least 6 characters long.</div>
+                }
+            </div>
+            }
+
+            <!-- Role Dropdown -->
+            <select id="role" formControlName="role" class="focus:outline-none border-b-4 border-slate-950 w-full">
+                <option value="" disabled>Select Role</option>
+                @for (role of roles; track role) {
+                <option [value]="role">{{ role }}</option>
+                }
+            </select>
+            @if (userRegisterForm.get('role')?.touched && userRegisterForm.get('role')?.invalid) {
+            <div class="text-red-700 text-sm mt-1">Role is required.</div>
+            }
+
+            <!-- Submit Button -->
+            <button type="submit" class="p-4 mt-4 border-2 border-black rounded-lg bg-black text-white w-full">
+                Register
+            </button>
+        </form>
+    </div>
+</section>

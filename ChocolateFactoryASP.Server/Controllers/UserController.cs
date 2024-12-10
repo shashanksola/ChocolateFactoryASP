@@ -1,6 +1,7 @@
 ﻿using ChocolateFactory.Models;
 using ChocolateFactory.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -15,10 +16,12 @@ namespace ChocolateFactory.Controllers
     {
 
         private readonly UserService _service;
+        private readonly NotificationService _notificationService;
 
-        public UserController(UserService service)
+        public UserController(UserService service, NotificationService notificationService)
         {
             _service = service;
+            _notificationService = notificationService;
         }
 
         [HttpGet("{role}")]
@@ -56,8 +59,10 @@ namespace ChocolateFactory.Controllers
             if (id == Guid.Empty || user == null) return BadRequest(new { message = "User with id " + id + " doesnt exists"});
 
             user.IsActive = true;
-
             await _service.UpdateUserActive(user);
+
+            await _notificationService.SendEmailAsync(user.Email, "Credentails Authorized", "Dear new user, you have been successfully Authorized Please login by using the username: " + user.Username);
+
             return Ok(new { message = "User is set to active"});
         }
 

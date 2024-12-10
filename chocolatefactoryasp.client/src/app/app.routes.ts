@@ -15,6 +15,7 @@ import { RecipesComponent } from './pages/recipes/recipes.component';
 import { SalesComponent } from './pages/sales/sales.component';
 import { SupplierComponent } from './pages/supplier/supplier.component';
 import { AuthGuard } from './auth/auth.guard';
+import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [{
     path: '',
@@ -23,6 +24,10 @@ export const routes: Routes = [{
 {
     path: 'login',
     component: LoginComponent
+},
+{
+    path: 'register',
+    component: RegisterComponent
 },
 {
     path: 'Console',

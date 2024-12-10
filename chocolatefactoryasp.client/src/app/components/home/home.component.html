@@ -2,17 +2,23 @@
     <nav
         class="bg-transparent backdrop-blur-lg p-4 sticky inset-0 flex justify-around items-center text-slate-950 font-bold">
         <div class="flex w-1/2 justify-between">
-            <a>Home</a>
-            <a>About Us</a>
+            <a class="cursor-pointer" routerLink="/">Home</a>
+            <a class="cursor-pointer" (click)="scrollToFooter()">About Us</a>
             <a href="mailto:shashanksola1010@gmail.com">Contact Sales</a>
         </div>
-        <button routerLink="/login" class="rounded-lg bg-black border border-white p-4 text-slate-50">Login</button>
+        <div>
+            <button routerLink="/login"
+                class="rounded-lg mr-2 bg-black border border-white p-4 text-slate-50">Login</button>
+            <button routerLink="/register" class="rounded-lg bg-black border border-white p-4 text-slate-50">Sign
+                Up</button>
+
+        </div>
     </nav>
-    <section class="-mt-20 flex">
-        <img class="w-1/2 h-screen"
+    <section class="-mt-20 lg:flex">
+        <img class="w-full lg:w-1/2 h-screen"
             src="https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
-        <section class="bg-[#ead2ac] flex-col w-1/2 h-screen justify-center items-center p-48">
-            <h1 class="text-6xl font-bold">Chocolate is the answer. Who cares what the question is</h1>
+        <section class="bg-[#ead2ac] flex-col lg:w-1/2 h-1/2 lg:h-screen justify-center items-center p-48">
+            <h1 class="text-6xl font-bold">Chocolate is the answer. Who cares what the question is?</h1>
         </section>
     </section>
     <footer class="bg-black text-white pt-12 px-4 md:px-8 bg-cover min-h-[35vh]" id="footer">

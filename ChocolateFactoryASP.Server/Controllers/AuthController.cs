@@ -24,8 +24,11 @@ namespace ChocolateFactory.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest)
         {
-            var user = await _authService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
+            User user = await _authService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
+
             if (user == null) return Unauthorized("Invalid credentials");
+
+            if (!user.IsActive) return Unauthorized("Wait for authorization from Factory Manager");
 
             var token = _authService.GenerateJwtToken(user);
             return Ok(new { Token = token });

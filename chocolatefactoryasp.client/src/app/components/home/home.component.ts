@@ -9,4 +9,7 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  scrollToFooter() {
+    document.getElementById('footer')?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+  }
 }

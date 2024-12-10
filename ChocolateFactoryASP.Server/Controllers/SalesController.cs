@@ -35,12 +35,12 @@ namespace ChocolateFactory.Controllers
                 return BadRequest(ModelState);
 
             Warehouse ware = await _service.GetWarehouseFromFinishedGoodId(order.ProductId);
-            if (ware != null && ware.CurrentStockLevel - order.Quantity >= 0) {
+            if (ware == null || ware.CurrentStockLevel - order.Quantity < 0) {
                 return BadRequest(new { message = "Warehouse doesnt have the capacity" });
             }
 
             FinishedGood good = await _service.GetFinishedGoodById(order.ProductId);
-            if (good != null && good.Quantity < order.Quantity) {
+            if (good == null || good.Quantity < order.Quantity) {
                 return BadRequest(new { message = "Finished Good doesnt have the Quantity" });
             }
 
