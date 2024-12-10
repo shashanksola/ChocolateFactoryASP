@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Notyf } from 'notyf';
@@ -41,7 +41,17 @@ export class PackagingComponent implements OnInit {
       packagingDate: [new Date().toISOString().split('T')[0], Validators.required],
       expiryDate: [''],
       warehouseLocation: ['', Validators.required],
-    });
+    }, { validators: this.dateValidator }
+    );
+  }
+
+  dateValidator(control: AbstractControl): ValidationErrors | null {
+    const packagingDate = new Date(control.get('packagingDate')?.value);
+    const expiryDate = new Date(control.get('expiryDate')?.value);
+    if (packagingDate <= expiryDate) {
+      return { invalidDeliveryDate: true }; // Custom error
+    }
+    return null;
   }
 
   // Fetch approved products

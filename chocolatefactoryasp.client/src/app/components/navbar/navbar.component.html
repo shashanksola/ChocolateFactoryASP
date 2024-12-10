@@ -1,7 +1,25 @@
-<nav class="bg-brown p-4 flex justify-between items-center inset-0 top-0 left-0 sticky">
-    <h1 class="font-bold text-white text-2xl">Choco.Co | {{role}} Console</h1>
-    <div class="flex items-center justify-around w-1/4">
-        <p class="text-xl text-white">Hello {{username}}</p>
-        <button class="bg-white text-brown p-2 rounded-lg font-bold" (click)="onSignOutClick()">Sign Out</button>
+<nav class="bg-brown p-4 flex justify-between items-center inset-0 top-0 left-0 sticky z-10">
+    <a (click)="toggleSidebar()" class="lg:hidden">
+        <svg class="size-8" xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 24 24"
+            fill="none">
+            <path d="M4 7L7 7M20 7L11 7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M20 17H17M4 17L13 17" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M4 12H7L20 12" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+    </a>
+    <h1 class="font-bold text-white text-2xl max-lg:hidden">Choco.Co | {{role}} Console</h1>
+    <div class="flex items-center justify-around w-1/4 max-lg:w-1/2">
+        <p class="text-xl text-white">{{username}}</p>
+        <button class="bg-white max-lg:text-nowrap text-brown p-2 rounded-lg font-bold mx-2"
+            (click)="onSignOutClick()">Sign Out</button>
     </div>
 </nav>
+
+@if (sidebarStatus) {
+<div class="w-3/5 bg-gray-300 h-dvh p-4 fixed z-10">
+    @for (page of pages; track page.id) {
+    <a (click)="toggleSidebar()" routerLink='{{page.path}}'
+        class="text-xl block hover:bg-brown hover:text-white p-2 rounded-lg">{{page.name}}</a>
+    }
+</div>
+}

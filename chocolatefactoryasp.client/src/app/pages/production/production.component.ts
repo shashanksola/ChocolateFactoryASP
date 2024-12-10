@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Notyf } from 'notyf';
@@ -58,9 +58,20 @@ export class ProductionComponent implements OnInit {
       shift: ['', Validators.required],
       supervisorId: ['', Validators.required],
       status: [0, Validators.required],
-    });
+    },
+      {
+        validators: this.dateValidator
+      });
   }
 
+  dateValidator(control: AbstractControl): ValidationErrors | null {
+    const startDate = new Date(control.get('startDate')?.value);
+    const endDate = new Date(control.get('endDate')?.value);
+    if (startDate <= endDate) {
+      return { invalidDeliveryDate: true }; // Custom error
+    }
+    return null;
+  }
   // Fetch all supervisors
   fetchSupervisors(): void {
     this.http.get<any[]>(`${this.apiUrl}/User/2`, { headers: this.headers }).subscribe({

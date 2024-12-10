@@ -1,4 +1,4 @@
-<section class="">
+<section class="max-lg:-ml-16">
     @if (recipes.length == 0) {
     <div class="text-center text-gray-500 mt-10">
         <p>No Recipes Found</p>
@@ -43,7 +43,7 @@
 </section>
 
 @if (role === 'FactoryManager') {
-<div class="container">
+<div class="max-lg:-ml-16 max-lg:mt-4">
     <h1 class="text-2xl font-bold">Add Recipe</h1>
     <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
@@ -67,10 +67,12 @@
         <div formArrayName="ingredients">
             <label class="">Ingredients</label>
             <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i"
-                class="ingredient-row mt-2 flex items-center">
-                <input formControlName="ingredientName" placeholder="Ingredient Name" class="p-2 rounded-lg" />
-                <input type="number" formControlName="quantity" placeholder="Quantity" class="rounded-lg p-2" />
-                <select formControlName="unit" class="border border-black rounded-lg p-2">
+                class="ingredient-row mt-2 flex items-center max-lg:flex-col">
+                <input formControlName="ingredientName" placeholder="Ingredient Name"
+                    class="p-2 rounded-lg max-lg:w-full" />
+                <input type="number" formControlName="quantity" placeholder="Quantity"
+                    class="rounded-lg p-2 max-lg:w-full" />
+                <select formControlName="unit" class="border border-black rounded-lg p-2 max-lg:w-full">
                     <option *ngFor="let unit of units" [value]="units.indexOf(unit)">{{ unit }}</option>
                 </select>
                 <button type="button" (click)="removeIngredient(i)"><svg class="size-6"
@@ -107,7 +109,8 @@
 
         <div class="flex justify-between">
             <button type="button" class="bg-blue-300 p-2 rounded-lg" (click)="addIngredient()">Add Ingredient</button>
-            <button type="submit" class="p-2 bg-green-600 text-white rounded-lg" [disabled]="recipeForm.invalid">Add
+            <button type="submit" class="p-2 bg-green-600 text-white rounded-lg disabled:bg-gray-300"
+                [disabled]="recipeForm.invalid">Add
                 Recipe</button>
         </div>
     </form>
