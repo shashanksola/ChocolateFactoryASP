@@ -1,41 +1,36 @@
-﻿<div class="container mx-auto p-6 max-lg:-ml-36 max-lg:scale-50">
-    <!-- Title -->
-    <h1 class="mb-6 text-center text-3xl font-bold">Dashboard</h1>
+﻿<div class="w-full flex justify-between items-center">
+    <h1 class="text-3xl my-8 font-bold">Dashboard</h1>
+    <button class="p-4 bg-brown rounded-lg font-bold text-white mr-8" (click)="downloadPDF()">Report</button>
+</div>
+<div class="max-lg:scale-50 max-lg:-ml-48 max-lg:-mt-96" id="dashboard-info">
+    <h1 class="text-3xl my-8">Production</h1>
+    <div id="dashboard-info-0">
+        <ngx-charts-bar-vertical [view]="view" [results]="productionData" [gradient]="gradient" [xAxis]="showXAxis"
+            [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel">
+        </ngx-charts-bar-vertical>
+    </div>
 
-    <!-- Dashboard Information Section to capture for PDF -->
-    <div id="dashboard-info" class="max-lg:size-10">
-        <!-- Production Chart -->
-        <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">Production Status</h2>
-            <ngx-charts-bar-vertical [results]="productionData" [view]="view" [scheme]="colorScheme" [xAxis]="true"
-                [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" xAxisLabel="Recipes"
-                yAxisLabel="In Progress Count">
-            </ngx-charts-bar-vertical>
-        </div>
+    <h1 class="text-3xl my-8">Warehouse Stock</h1>
+    <div id="dashboard-info-1">
+        <ngx-charts-bar-horizontal [view]="view" [results]="warehouseStockData" [gradient]="gradient"
+            [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel" xAxisLabel="Stock Quantity" yAxisLabel="Warehouses">
+        </ngx-charts-bar-horizontal>
+    </div>
 
-        <!-- Warehouse Stock Chart -->
-        <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">Warehouse Stock Levels</h2>
-            <ngx-charts-pie-chart [results]="warehouseStockData" [view]="view" [scheme]="colorScheme" [legend]="true"
-                [labels]="true" [doughnut]="false">
-            </ngx-charts-pie-chart>
-        </div>
+    <h1 class="text-3xl my-8">Quality Status</h1>
+    <div id="dashboard-info-2">
+        <ngx-charts-pie-chart [view]="view" [results]="qualityStatusData" [gradient]="gradient" [legend]="showLegend"
+            xAxisLabel="Quality Status" yAxisLabel="Warehouses">
+        </ngx-charts-pie-chart>
+    </div>
 
-        <!-- Quality Status -->
-        <div class="mb-8">
-            <h2 class="mb-4 text-2xl font-semibold">Quality Status</h2>
-            <ngx-charts-pie-chart [results]="qualityStatusData" [view]="view" [scheme]="colorScheme" [legend]="true"
-                [labels]="true" [doughnut]="true">
-            </ngx-charts-pie-chart>
-        </div>
-
-        <!-- Sales Status -->
-        <div>
-            <h2 class="mb-4 text-2xl font-semibold">Sales Status</h2>
-            <ngx-charts-bar-horizontal [results]="salesData" [view]="view" [scheme]="colorScheme" [xAxis]="true"
-                [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true"
-                xAxisLabel="Quantity Sold" yAxisLabel="Order Status">
-            </ngx-charts-bar-horizontal>
-        </div>
+    <h1 class="text-3xl my-8">Sold Stock</h1>
+    <div id="dashboard-info-3">
+        <ngx-charts-bar-horizontal [view]="view" [results]="salesData" [gradient]="gradient" [xAxis]="showXAxis"
+            [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel" xAxisLabel="Stock Quantity" yAxisLabel="Sold Stocks">
+        </ngx-charts-bar-horizontal>
     </div>
 </div>

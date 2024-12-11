@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { NgxChartsModule, Color, ScaleType } from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { Notyf } from 'notyf';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';  // Import html2canvas
+import autoTable from 'jspdf-autotable';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgxChartsModule, HttpClientModule],
+  imports: [NgxChartsModule, HttpClientModule, CommonModule],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
@@ -23,11 +24,24 @@ export class DashboardComponent implements OnInit {
 
   view: [number, number] = [700, 400];
 
-  colorScheme: Color = {
-    name: 'customScheme',
-    selectable: true,
-    group: ScaleType.Ordinal,
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5']
+  // colorScheme: Color = {
+  //   name: 'customScheme',
+  //   selectable: true,
+  //   group: ScaleType.Ordinal,
+  //   domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5']
+  // };
+
+  showXAxis = true;
+  showYAxis = true;
+  gradient = false;
+  showLegend = true;
+  showXAxisLabel = true;
+  xAxisLabel = 'Prodcuts';
+  showYAxisLabel = true;
+  yAxisLabel = 'Production Count';
+
+  colorScheme = {
+    domain: ['#EAD2AC', '#8A6552', '#CFC0BB', '#7aa3e5']
   };
 
   constructor(private http: HttpClient) {
@@ -49,14 +63,30 @@ export class DashboardComponent implements OnInit {
           name: item.recipeName,
           value: item.status === 1 ? 1 : 0,
         }));
+
+        const groupedData = Array.from(
+          this.productionData.reduce((acc: Map<string, { name: string; value: number }>, item) => {
+            if (!acc.has(item.name)) {
+              acc.set(item.name, { name: item.name, value: item.value });
+            } else {
+              acc.get(item.name)!.value += item.value;
+            }
+            return acc;
+          }, new Map<string, { name: string; value: number }>())
+        ).map(([_, value]) => value);
+
+        this.productionData = groupedData;
       },
       error: () => this.notyf.error('Error fetching production data'),
     });
+
+    console.log(this.productionData);
   }
 
   fetchWarehouseData(): void {
     this.http.get<any[]>(`${this.apiUrl}/Warehouse`, { headers: this.headers }).subscribe({
       next: (data) => {
+        console.log(data);
         this.warehouseStockData = data.map((warehouse) => ({
           name: warehouse.name,
           value: warehouse.currentStockLevel,
@@ -86,34 +116,66 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         const salesMap: { [key: string]: number } = {};
 
-        data.forEach((order) => {
-          if (salesMap[order.status]) {
-            salesMap[order.status] += order.quantity;
-          } else {
-            salesMap[order.status] = order.quantity;
+        this.salesData = data.map((order) => {
+          return {
+            name: order.orderId,
+            value: order.quantity
           }
         });
 
-        this.salesData = Object.keys(salesMap).map((status) => ({
-          name: status,
-          value: salesMap[status],
-        }));
+        console.log(data);
+
+        console.log(this.salesData);
       },
       error: () => this.notyf.error('Error fetching sales data'),
     });
   }
 
   downloadPDF(): void {
-    const element = document.getElementById('dashboard-info');
+    const pdf = new jsPDF();
 
-    // Use html2canvas to render the HTML into a canvas
-    html2canvas(element!).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
+    // Table for Production Data
+    if (this.productionData.length > 0) {
+      pdf.text('Production Data', 10, 10);
+      autoTable(pdf, {
+        startY: 15,
+        head: [['Recipe Name', 'Production Status']],
+        body: this.productionData.map((item) => [item.name, item.value.toString()]),
+      });
+    }
 
-      // Add the image to the PDF
-      pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);  // A4 size
-      pdf.save('dashboard-summary.pdf');  // Save as PDF
-    });
+    // Table for Warehouse Data
+    if (this.warehouseStockData.length > 0) {
+      pdf.text('Warehouse Stock Data', 10, 80);
+      autoTable(pdf, {
+        startY: 25,
+        head: [['Warehouse Name', 'Current Stock Level']],
+        body: this.warehouseStockData.map((item) => [item.name, item.value.toString()]),
+      });
+    }
+
+    // Table for Quality Data
+    if (this.qualityStatusData.length > 0) {
+      pdf.text('Quality Status Data', 10, 160);
+      autoTable(pdf, {
+        startY: 20,
+        head: [['Status', 'Count']],
+        body: this.qualityStatusData.map((item) => [item.name, item.value.toString()]),
+      });
+    }
+
+    // Table for Sales Data
+    if (this.salesData.length > 0) {
+      pdf.text('Sales Data', 10, 240);
+      autoTable(pdf, {
+        startY: 10 + 15,
+        head: [['Order ID', 'Quantity']],
+        body: this.salesData.map((item) => [item.name, item.value.toString()]),
+      });
+    }
+
+    // Save the PDF
+    pdf.save('dashboard-data.pdf');
   }
+
 }
