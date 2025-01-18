@@ -67,7 +67,7 @@ export class ProductionComponent implements OnInit {
   dateValidator(control: AbstractControl): ValidationErrors | null {
     const startDate = new Date(control.get('startDate')?.value);
     const endDate = new Date(control.get('endDate')?.value);
-    if (startDate <= endDate) {
+    if (startDate > endDate) {
       return { invalidDeliveryDate: true }; // Custom error
     }
     return null;

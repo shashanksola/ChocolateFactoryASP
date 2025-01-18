@@ -48,7 +48,7 @@ export class PackagingComponent implements OnInit {
   dateValidator(control: AbstractControl): ValidationErrors | null {
     const packagingDate = new Date(control.get('packagingDate')?.value);
     const expiryDate = new Date(control.get('expiryDate')?.value);
-    if (packagingDate <= expiryDate) {
+    if (packagingDate > expiryDate) {
       return { invalidDeliveryDate: true }; // Custom error
     }
     return null;
