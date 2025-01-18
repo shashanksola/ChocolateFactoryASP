@@ -31,7 +31,7 @@ export class LoginComponent {
   onSubmit() {
     if (this.userLoginForm.valid) {
       const loginData = this.userLoginForm.value;
-      this.http.post('https://localhost:7051/api/Auth/login', loginData).subscribe({
+      this.http.post('https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Auth/login', loginData).subscribe({
         next: (response) => {
           this.notyf.success(`Login Successful, Welcom ${loginData.username}`)
 

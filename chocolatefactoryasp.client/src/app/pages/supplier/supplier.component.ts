@@ -15,7 +15,7 @@ export class SupplierComponent implements OnInit {
   supplierForm!: FormGroup;
   editMode: boolean = false;
   selectedSupplierId: string = '';
-  apiUrl = 'https://localhost:7051/api/Supplier';
+  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Supplier';
   notyf = new Notyf();
   headers = { Authorization: `Bearer ${localStorage.getItem('token') || ''}` };
 

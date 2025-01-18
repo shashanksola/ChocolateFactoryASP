@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class DashboardComponent implements OnInit {
   headers: HttpHeaders;
-  apiUrl = 'https://localhost:7051/api';
+  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api';
   notyf = new Notyf();
 
   productionData: any[] = [];

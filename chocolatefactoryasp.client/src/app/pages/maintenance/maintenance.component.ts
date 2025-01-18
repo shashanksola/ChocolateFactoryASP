@@ -26,7 +26,7 @@ export class MaintenanceComponent implements OnInit {
   ];
   technicians: any[] = []; // Holds users with Technician role
   editMode = false;
-  apiUrl = 'https://localhost:7051/api';
+  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api';
   notyf = new Notyf();
   headers: HttpHeaders;
   role = '';
