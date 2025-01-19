@@ -125,7 +125,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(options =>
-    options.WithOrigins("http://localhost:4200", "https://chococo.vercel.app")
+    options.WithOrigins("http://localhost:4200", "https://chococo.vercel.app", "https://ashy-ground-0b7c62500.4.azurestaticapps.net")
     .AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
