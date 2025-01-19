@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Notyf } from 'notyf';
@@ -50,9 +50,18 @@ export class MaintenanceComponent implements OnInit {
       equipmentName: ['', Validators.required],
       maintenanceDate: ['', Validators.required],
       technician: ['', Validators.required],
-      nextScheduledDate: [''],
+      nextScheduledDate: ['', Validators.required],
       details: ['', Validators.maxLength(500)],
-    });
+    }, { validators: this.dateValidator });
+  }
+
+  dateValidator(control: AbstractControl): ValidationErrors | null {
+    const maintenanceDate = new Date(control.get('maintenanceDate')?.value);
+    const nextScheduledDate = new Date(control.get('nextScheduledDate')?.value);
+    if (maintenanceDate > nextScheduledDate) {
+      return { invalidDeliveryDate: true }; // Custom error
+    }
+    return null;
   }
 
   // Fetch maintenance records

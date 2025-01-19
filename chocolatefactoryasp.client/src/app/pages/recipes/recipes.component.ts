@@ -131,6 +131,8 @@ export class RecipesComponent implements OnInit {
       console.log(recipe);
 
       this.addRecipe(recipe);
+
+      this.recipeForm.reset();
     }
   }
 }
