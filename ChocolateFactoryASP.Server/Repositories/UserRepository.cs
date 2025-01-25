@@ -1,5 +1,7 @@
 ﻿using ChocolateFactory.Data;
 using ChocolateFactory.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 public interface IUserRepository
@@ -40,14 +42,21 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
     }
 
+    //public async Task DeleteUserAsync(string username)
+    //{
+    //    var user = await GetUserByUsernameAsync(username);
+    //    if (user != null)
+    //    {
+    //        _context.Users.Remove(user);
+    //        await _context.SaveChangesAsync();
+    //    }
+    //}
+
     public async Task DeleteUserAsync(string username)
     {
-        var user = await GetUserByUsernameAsync(username);
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-        }
+        var sql = "DELETE FROM Users WHERE Username = @username";
+
+        await _context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("@username", username));
     }
 
     public async Task<IEnumerable<User>> GetUserByUserRoleAsync(UserRole role)
