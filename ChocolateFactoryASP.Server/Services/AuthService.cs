@@ -33,6 +33,11 @@ namespace ChocolateFactory.Services
             {
                 return false;
             }
+            existingUser = await _userRepository.GetUserByEmailAsync(newUser.Email);
+            if (existingUser != null)
+            {
+                return false;
+            }
 
             // Hash the password using BCrypt before storing
             newUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.PasswordHash);
