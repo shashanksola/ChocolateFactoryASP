@@ -42,7 +42,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpGet("/Completed")]
-        [Authorize(Roles ="FactoryManager,QualityController")]
+        [Authorize(Roles = "FactoryManager,QualityController,PackagingStaff,ProductionSupervisor")]
         public async Task<IActionResult> GetAllCompletedSchedules()
         {
             var schedules = await _service.GetAllSchedulesAsync();
