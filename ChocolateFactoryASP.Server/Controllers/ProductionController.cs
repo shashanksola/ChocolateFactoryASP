@@ -52,6 +52,7 @@ namespace ChocolateFactory.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "ProductionSupervisor,FactoryManager")]
         public async Task<IActionResult> AddSchedule([FromBody] ProductionSchedule schedule)
         {
             // Fetch the recipe based on the provided recipe name
@@ -129,6 +130,7 @@ namespace ChocolateFactory.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "ProductionSupervisor,FactoryManager")]
         public async Task<IActionResult> CompleteProductionByScheduleID(Guid id)
         {
             var schedule = await _service.GetScheduleByIDAsync(id);
