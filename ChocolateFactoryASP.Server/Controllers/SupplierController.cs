@@ -7,7 +7,7 @@ namespace ChocolateFactory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "FactoryManager,Admin")]
+    [Authorize(Roles = "FactoryManager")]
     public class SupplierController : ControllerBase
     {
         private readonly SupplierService _service;
@@ -17,16 +17,16 @@ namespace ChocolateFactory.Controllers
             _service = service;
         }
 
-        // GET: api/Supplier
         [HttpGet]
+        [Authorize(Roles = "FactoryManager,MaterialStaff,ProductionSupervisor")]
         public async Task<IActionResult> GetAllSuppliers()
         {
             var suppliers = await _service.GetAllSuppliersAsync();
             return Ok(suppliers);
         }
 
-        // GET: api/Supplier/{id}
         [HttpGet("{id}")]
+        [Authorize(Roles = "FactoryManager,MaterialStaff,ProductionSupervisor")]
         public async Task<IActionResult> GetSupplierById(Guid id)
         {
             var supplier = await _service.GetSupplierByIdAsync(id);
@@ -35,7 +35,6 @@ namespace ChocolateFactory.Controllers
             return Ok(supplier);
         }
 
-        // POST: api/Supplier
         [HttpPost]
         public async Task<IActionResult> AddSupplier([FromBody] Supplier supplier)
         {
@@ -46,7 +45,6 @@ namespace ChocolateFactory.Controllers
             return CreatedAtAction(nameof(GetSupplierById), new { id = supplier.SupplierId }, supplier);
         }
 
-        // PUT: api/Supplier/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSupplier(Guid id, [FromBody] Supplier supplier)
         {
@@ -64,7 +62,6 @@ namespace ChocolateFactory.Controllers
             }
         }
 
-        // DELETE: api/Supplier/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSupplier(Guid id)
         {
