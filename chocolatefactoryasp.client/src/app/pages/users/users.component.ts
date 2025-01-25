@@ -100,13 +100,12 @@ export class UsersComponent implements OnInit {
   deleteUser(username: string) {
     this.http.delete(`https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/User/${username}`, { headers: this.headers }).subscribe({
       next: () => {
-        this.notyf.success('User registration successfull')
-        this.userForm.reset();
+        this.notyf.success('User deletion successfull')
         this.fetchAllUsers();
       },
       error: (error) => {
         console.log(error);
-        this.notyf.error('Error registering user');
+        this.notyf.error('Error deleting user');
       },
     });
   }
