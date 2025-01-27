@@ -97,6 +97,16 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.role = localStorage.getItem('role') || "Role";
     this.username = localStorage.getItem('username') || "[Username]";
+
+    const temp = [];
+
+    for (let i = 0; i < this.pages.length; i++) {
+      if (this.pages[i].roles.includes(this.role)) {
+        temp.push(this.pages[i]);
+      }
+    }
+
+    this.pages = temp;
   }
 
   toggleSidebar() {
