@@ -19,9 +19,9 @@ export class RawMaterialsComponent implements OnInit {
   editMode: boolean = false;
   selectedWarehouse: string = '';
 
-  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/RawMaterial';
-  warehouseUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Warehouse';
-  supplierUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Supplier';
+  apiUrl = 'https://localhost:7051api/RawMaterial';
+  warehouseUrl = 'https://localhost:7051api/Warehouse';
+  supplierUrl = 'https://localhost:7051api/Supplier';
   notyf = new Notyf();
   headers = { Authorization: `Bearer ${localStorage.getItem('token') || ''}` };
 

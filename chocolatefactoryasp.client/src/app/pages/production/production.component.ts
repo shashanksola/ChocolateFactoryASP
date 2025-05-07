@@ -28,7 +28,7 @@ export class ProductionComponent implements OnInit {
     'Milliliter',
     'Piece']
 
-  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api';
+  apiUrl = 'https://localhost:7051api';
   notyf = new Notyf();
   headers: HttpHeaders;
   editingScheduleStatus: any;

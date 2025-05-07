@@ -47,7 +47,7 @@ export class RegisterComponent {
 
       console.log(registerData);
 
-      this.http.post('https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Auth/registerNew', registerData).subscribe({
+      this.http.post('https://localhost:7051api/Auth/registerNew', registerData).subscribe({
         next: () => {
           this.notyf.success('Registration Successful! Wait for authorization');
           this.router.navigateByUrl('/login');

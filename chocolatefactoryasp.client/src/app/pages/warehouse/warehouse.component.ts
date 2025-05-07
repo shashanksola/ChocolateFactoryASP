@@ -15,7 +15,7 @@ export class WarehouseComponent implements OnInit {
   warehouses: any[] = [];
   warehouseForm!: FormGroup;
   editMode: boolean = false;
-  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Warehouse';
+  apiUrl = 'https://localhost:7051api/Warehouse';
   notyf = new Notyf();
   headers = {
     Authorization: `Bearer ${localStorage.getItem('token') || ''}`,

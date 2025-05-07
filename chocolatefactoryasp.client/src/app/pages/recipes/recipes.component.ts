@@ -20,7 +20,7 @@ export class RecipesComponent implements OnInit {
   token = "";
   notyf = new Notyf();
   headers = {}
-  url = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api/Recipe';
+  url = 'https://localhost:7051api/Recipe';
   units = ['Kilogram',
     'Gram',
     'Liter',

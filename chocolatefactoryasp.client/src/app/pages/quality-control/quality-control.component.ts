@@ -17,7 +17,7 @@ export class QualityControlComponent implements OnInit {
   qualityControllers: any[] = [];
   qualityChecks: any[] = [];
   qualityStatusOptions = ['Approved', 'Rejected', 'Pending'];
-  apiUrl = 'https://chocolatefactoryaspserver20250118211324.azurewebsites.net/api';
+  apiUrl = 'https://localhost:7051api';
   headers: HttpHeaders;
   notyf = new Notyf();
   role = '';
@@ -47,7 +47,7 @@ export class QualityControlComponent implements OnInit {
   }
 
   fetchCompletedProductions(): void {
-    this.http.get<any[]>(`https://chocolatefactoryaspserver20250118211324.azurewebsites.net/Completed`, { headers: this.headers }).subscribe({
+    this.http.get<any[]>(`https://localhost:7051Completed`, { headers: this.headers }).subscribe({
       next: (data) => {
         this.completedProductions = data;
         this.filterBatchIds();
