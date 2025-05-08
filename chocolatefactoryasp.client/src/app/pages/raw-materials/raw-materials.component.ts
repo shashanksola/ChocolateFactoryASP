@@ -19,9 +19,9 @@ export class RawMaterialsComponent implements OnInit {
   editMode: boolean = false;
   selectedWarehouse: string = '';
 
-  apiUrl = 'https://localhost:7051api/RawMaterial';
-  warehouseUrl = 'https://localhost:7051api/Warehouse';
-  supplierUrl = 'https://localhost:7051api/Supplier';
+  apiUrl = 'https://localhost:7051/api/RawMaterial';
+  warehouseUrl = 'https://localhost:7051/api/Warehouse';
+  supplierUrl = 'https://localhost:7051/api/Supplier';
   notyf = new Notyf();
   headers = { Authorization: `Bearer ${localStorage.getItem('token') || ''}` };
 

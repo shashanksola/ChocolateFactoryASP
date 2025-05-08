@@ -20,7 +20,7 @@ export class RecipesComponent implements OnInit {
   token = "";
   notyf = new Notyf();
   headers = {}
-  url = 'https://localhost:7051api/Recipe';
+  url = 'https://localhost:7051/api/Recipe';
   units = ['Kilogram',
     'Gram',
     'Liter',

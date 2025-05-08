@@ -28,7 +28,7 @@ export class ProductionComponent implements OnInit {
     'Milliliter',
     'Piece']
 
-  apiUrl = 'https://localhost:7051api';
+  apiUrl = 'https://localhost:7051/api';
   notyf = new Notyf();
   headers: HttpHeaders;
   editingScheduleStatus: any;

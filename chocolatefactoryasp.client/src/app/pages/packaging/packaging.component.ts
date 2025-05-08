@@ -15,7 +15,7 @@ export class PackagingComponent implements OnInit {
   finishedGoods: any[] = [];
   approvedProducts: any[] = [];
   warehouses: any[] = [];
-  apiUrl = 'https://localhost:7051api';
+  apiUrl = 'https://localhost:7051/api';
   notyf = new Notyf();
   headers: HttpHeaders;
   role = '';

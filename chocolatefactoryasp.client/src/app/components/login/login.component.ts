@@ -31,7 +31,7 @@ export class LoginComponent {
   onSubmit() {
     if (this.userLoginForm.valid) {
       const loginData = this.userLoginForm.value;
-      this.http.post('https://localhost:7051api/Auth/login', loginData).subscribe({
+      this.http.post('https://localhost:7051/api/Auth/login', loginData).subscribe({
         next: (response) => {
           this.notyf.success(`Login Successful, Welcom ${loginData.username}`)
 
@@ -51,7 +51,7 @@ export class LoginComponent {
           this._router.navigateByUrl('Console');
         },
         error: (error) => {
-          this.notyf.error(`Login Unsuccessful : ${error.error}`)
+          this.notyf.error(`Login Unsuccessful : ${error}`)
         }
       });
     } else {

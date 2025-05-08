@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class DashboardComponent implements OnInit {
   headers: HttpHeaders;
-  apiUrl = 'https://localhost:7051api';
+  apiUrl = 'https://localhost:7051/api';
   notyf = new Notyf();
 
   productionData: any[] = [];

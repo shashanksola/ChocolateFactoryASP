@@ -29,7 +29,7 @@ export class UsersComponent implements OnInit {
   headers = {
     Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
   };
-  apiUrl = 'https://localhost:7051api/User';
+  apiUrl = 'https://localhost:7051/api/User';
 
   constructor(private fb: FormBuilder, private http: HttpClient) { }
 
@@ -83,7 +83,7 @@ export class UsersComponent implements OnInit {
       let newUser = this.userForm.value;
       newUser.role = this.roles.indexOf(newUser.role);
 
-      this.http.post(`https://localhost:7051api/Auth/register`, newUser, { headers: this.headers }).subscribe({
+      this.http.post(`https://localhost:7051/api/Auth/register`, newUser, { headers: this.headers }).subscribe({
         next: () => {
           this.notyf.success('User registration successfull')
           this.userForm.reset();
@@ -98,7 +98,7 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(username: string) {
-    this.http.delete(`https://localhost:7051api/User/${username}`, { headers: this.headers }).subscribe({
+    this.http.delete(`https://localhost:7051/api/User/${username}`, { headers: this.headers }).subscribe({
       next: () => {
         this.notyf.success('User deletion successfull')
         this.fetchAllUsers();
@@ -112,7 +112,7 @@ export class UsersComponent implements OnInit {
 
   activateUser(user: any) {
     console.log(user);
-    this.http.patch<any>(`https://localhost:7051api/User/setActive/${user.userId}`, null, { headers: this.headers }).subscribe({
+    this.http.patch<any>(`https://localhost:7051/api/User/setActive/${user.userId}`, null, { headers: this.headers }).subscribe({
       next: (response) => {
         this.notyf.success(response.message);
         this.fetchAllUsers();

@@ -17,7 +17,7 @@ export class QualityControlComponent implements OnInit {
   qualityControllers: any[] = [];
   qualityChecks: any[] = [];
   qualityStatusOptions = ['Approved', 'Rejected', 'Pending'];
-  apiUrl = 'https://localhost:7051api';
+  apiUrl = 'https://localhost:7051/api';
   headers: HttpHeaders;
   notyf = new Notyf();
   role = '';

@@ -15,7 +15,7 @@ export class SupplierComponent implements OnInit {
   supplierForm!: FormGroup;
   editMode: boolean = false;
   selectedSupplierId: string = '';
-  apiUrl = 'https://localhost:7051api/Supplier';
+  apiUrl = 'https://localhost:7051/api/Supplier';
   notyf = new Notyf();
   headers = { Authorization: `Bearer ${localStorage.getItem('token') || ''}` };
 

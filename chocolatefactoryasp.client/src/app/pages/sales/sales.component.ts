@@ -16,7 +16,7 @@ export class SalesComponent implements OnInit {
   salesOrders: any[] = []; // Existing sales orders
   loggedInUserId: string = ''; // Placeholder for user ID
   headers: HttpHeaders;
-  apiUrl = 'https://localhost:7051api';
+  apiUrl = 'https://localhost:7051/api';
   notyf = new Notyf();
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
